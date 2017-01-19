@@ -166,16 +166,16 @@ public class NativeEditBox : PluginMsgReceiver {
 	private IEnumerator InitializeAtEndOfFrame()
 	{
 		yield return new WaitForEndOfFrame();
-
-		this.PrepareNativeEdit();
-		#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
-		this.CreateNativeEdit();
-		this.SetTextNative(this.objUnityText.text);
-
-		objUnityInput.placeholder.gameObject.SetActive(false);
-		objUnityText.enabled = false;
-		objUnityInput.enabled = false;
-		#endif
+//
+//		this.PrepareNativeEdit();
+//		#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
+//		this.CreateNativeEdit();
+//		this.SetTextNative(this.objUnityText.text);
+//
+//		objUnityInput.placeholder.gameObject.SetActive(false);
+//		objUnityText.enabled = false;
+//		objUnityInput.enabled = false;
+//		#endif
 	}
 
 	private void Update()
