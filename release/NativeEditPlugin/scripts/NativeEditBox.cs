@@ -254,7 +254,7 @@ public class NativeEditBox : PluginMsgReceiver {
 		string strError = jsonRet.GetString("strError");
 		if (bError)
 		{
-			PluginMsgHandler.getInst().FileLogError(string.Format("NativeEditbox error {0}", strError));
+//			PluginMsgHandler.getInst().FileLogError(string.Format("NativeEditbox error {0}", strError));
 		}
 		return bError;
 	}
