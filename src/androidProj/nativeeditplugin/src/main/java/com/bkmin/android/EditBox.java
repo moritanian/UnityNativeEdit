@@ -40,6 +40,7 @@ public class EditBox {
     private static final String MSG_TEXT_END_EDIT = "TextEndEdit";
     private static final String MSG_ANDROID_KEY_DOWN = "AndroidKeyDown";
     private static final String MSG_RETURN_PRESSED = "ReturnPressed";
+    private static final String MSG_LOG = "LogMessage";
 
     public static void processRecvJsonMsg(int nSenderId, final String strJson)
     {
@@ -195,6 +196,18 @@ public class EditBox {
             edit.setLayoutParams(lp);
             edit.setPadding(0, 0, 0, 0);
 
+            JSONObject logJSON = new JSONObject();
+            logJSON.put("msg",MSG_LOG);
+            logJSON.put("x", x);
+            logJSON.put("y", y);
+            logJSON.put("xMax", x + width);
+            logJSON.put("yMax", y + width);
+            logJSON.put("r", textColor_r);
+            logJSON.put("g", textColor_g);
+            logJSON.put("b", textColor_b);
+            logJSON.put("a", textColor_a);
+            SendJsonToUnity(logJSON);
+
             int editInputType = 0;
             switch (contentType) {
                 case "Standard" : editInputType |= InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES; break; // This is default behaviour
@@ -324,7 +337,9 @@ public class EditBox {
                         jsonToUnity.put("msg", MSG_TEXT_CHANGE);
                         jsonToUnity.put("text", s.toString());
                     }
-                    catch(JSONException e) {}
+                    catch(JSONException e) {
+
+                    }
                     eb.SendJsonToUnity(jsonToUnity);
                 }
 
@@ -365,7 +380,16 @@ public class EditBox {
 
         } catch (JSONException e)
         {
-            Log.i(NativeEditPlugin.LOG_TAG, String.format("Create editbox error %s", e.getMessage()));
+            String message = String.format("Create editbox error %s", e.getMessage());
+            JSONObject unityMsg = new JSONObject();
+            try {
+                unityMsg.put("msg", MSG_LOG);
+                unityMsg.put("context", "Create editbox");
+                unityMsg.put("error", e.getMessage());
+                SendJsonToUnity(unityMsg);
+            }
+            catch (JSONException ne) {}
+            Log.i(NativeEditPlugin.LOG_TAG, message);
         }
     }
 

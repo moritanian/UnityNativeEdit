@@ -36,6 +36,8 @@ using UnityEngine.Events;
 using System;
 using System.Collections;
 using UnityEngine.UI;
+using System.ComponentModel;
+using System.Linq;
 
 [RequireComponent(typeof(InputField))]
 public class NativeEditBox : PluginMsgReceiver
@@ -89,6 +91,7 @@ public class NativeEditBox : PluginMsgReceiver
 	private const string MSG_ANDROID_KEY_DOWN = "AndroidKeyDown";
 	private const string MSG_RETURN_PRESSED = "ReturnPressed";
 	private const string MSG_GET_TEXT = "GetText";
+	private const string MSG_LOG = "LogMessage";
 
 	public InputField InputField { get { return objUnityInput; } }
 	public bool Visible { get; private set; }
@@ -155,7 +158,7 @@ public class NativeEditBox : PluginMsgReceiver
 		// Wait until the end of frame before initializing to ensure that Unity UI layout has been built. We used to
 		// initialize at Start, but that resulted in an invalid RectTransform position and size on the InputField if it
 		// was instantiated at runtime instead of being built in to the scene.
-		StartCoroutine(InitialzieOnNextFrame());
+		StartCoroutine(InitializeOnNextFrame());
 	}
 
 	private void OnEnable()
@@ -185,12 +188,15 @@ public class NativeEditBox : PluginMsgReceiver
 		this.SetVisible(hasFocus);
 	}
 
-	private IEnumerator InitialzieOnNextFrame()
+	private IEnumerator InitializeOnNextFrame()
 	{
-		yield return null;
+		Debug.Log("NativeEditBox.InitialzieOnNextFrame()...");
+		yield return new WaitForEndOfFrame();
 
+		Debug.Log("NativeEditBox.PerpareNativeEdit()...");
 		this.PrepareNativeEdit();
-		#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR
+		#if UNITY_IPHONE  && !UNITY_EDITOR
+		Debug.Log("NativeEditBox.CreateNativeEdit()...");
 		this.CreateNativeEdit();
 		this.SetTextNative(this.objUnityText.text);
 
@@ -281,6 +287,10 @@ public class NativeEditBox : PluginMsgReceiver
 			if (OnReturnPressed != null)
 				OnReturnPressed.Invoke();
 		}
+		else if (msg.Equals(MSG_LOG))
+		{
+			Debug.Log(jsonMsg.Serialize());
+		}
 	}
 
 	private bool CheckErrorJsonRet(JsonObject jsonRet)
@@ -294,6 +304,33 @@ public class NativeEditBox : PluginMsgReceiver
 		return bError;
 	}
 
+	private Rect previousRect;
+
+	public void AddRectParameters(JsonObject jsonMsg, Rect rectScreen)
+	{
+		jsonMsg["x"] = rectScreen.x / Screen.width;
+		jsonMsg["y"] = rectScreen.y / Screen.height;
+		jsonMsg["width"] = rectScreen.width / Screen.width;
+		jsonMsg["height"] = rectScreen.height / Screen.height;
+	}
+
+	public void SetRectNative(RectTransform rectTrans)
+	{
+		Rect rectScreen = GetScreenRectFromRectTransform(rectTrans);
+
+		if (rectScreen.Equals(previousRect))
+			return;
+
+		previousRect = rectScreen;
+
+		JsonObject jsonMsg = new JsonObject();
+
+		jsonMsg["msg"] = MSG_SET_RECT;
+		AddRectParameters(jsonMsg, rectScreen);
+
+		this.SendPluginMsg(jsonMsg);
+	}
+
 	private void CreateNativeEdit()
 	{
 		Rect rectScreen = GetScreenRectFromRectTransform(this.objUnityText.rectTransform);
@@ -302,12 +339,10 @@ public class NativeEditBox : PluginMsgReceiver
 
 		jsonMsg["msg"] = MSG_CREATE;
 
-		jsonMsg["x"] = rectScreen.x / Screen.width;
-		jsonMsg["y"] = rectScreen.y / Screen.height;
-		jsonMsg["width"] = rectScreen.width / Screen.width;
-		jsonMsg["height"] = rectScreen.height / Screen.height;
-		jsonMsg["characterLimit"] = mConfig.characterLimit;
+		AddRectParameters(jsonMsg, rectScreen);
+		previousRect = rectScreen;
 
+		jsonMsg["characterLimit"] = mConfig.characterLimit;
 		jsonMsg["textColor_r"] = mConfig.textColor.r;
 		jsonMsg["textColor_g"] = mConfig.textColor.g;
 		jsonMsg["textColor_b"] = mConfig.textColor.b;
@@ -370,23 +405,7 @@ public class NativeEditBox : PluginMsgReceiver
 		jsonMsg["msg"] = MSG_REMOVE;
 		this.SendPluginMsg(jsonMsg);
 	}
-
-	public void SetRectNative(RectTransform rectTrans)
-	{
-		Rect rectScreen = GetScreenRectFromRectTransform(rectTrans);
-
-		JsonObject jsonMsg = new JsonObject();
 		
-		jsonMsg["msg"] = MSG_SET_RECT;
-
-		jsonMsg["x"] = rectScreen.x / Screen.width;
-		jsonMsg["y"] = rectScreen.y / Screen.height;
-		jsonMsg["width"] = rectScreen.width / Screen.width;
-		jsonMsg["height"] = rectScreen.height / Screen.height;
-
-		this.SendPluginMsg(jsonMsg);
-	}
-
 	public void SetFocus(bool bFocus)
 	{
 #if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
