@@ -195,7 +195,7 @@ public class NativeEditBox : PluginMsgReceiver
 
 		Debug.Log("NativeEditBox.PerpareNativeEdit()...");
 		this.PrepareNativeEdit();
-		#if UNITY_IPHONE  && !UNITY_EDITOR
+		#if (UNITY_IPHONE || UNITY_ANDROID)  && !UNITY_EDITOR
 		Debug.Log("NativeEditBox.CreateNativeEdit()...");
 		this.CreateNativeEdit();
 		this.SetTextNative(this.objUnityText.text);
