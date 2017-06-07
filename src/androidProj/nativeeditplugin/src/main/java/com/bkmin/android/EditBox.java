@@ -395,7 +395,7 @@ public class EditBox {
             Log.i(NativeEditPlugin.LOG_TAG, String.format("Create editbox error %s", e.getMessage()));
         }
 
-        Log.i(NativeEditPlugin.LOG_TAG, String.format("Create editbox finished %s"));
+        Log.i(NativeEditPlugin.LOG_TAG, String.format("Create editbox finished"));
     }
 
     private void Remove()
@@ -452,7 +452,7 @@ public class EditBox {
         }
         this.showKeyboard(isFocus);
 
-        Log.i(NativeEditPlugin.LOG_TAG, String.format("Set editbox focus to %s", isFocus ));
+        Log.i(NativeEditPlugin.LOG_TAG, String.format("Set editbox focus to %b", isFocus ));
     }
 
     private void SetRect(JSONObject jsonRect)
