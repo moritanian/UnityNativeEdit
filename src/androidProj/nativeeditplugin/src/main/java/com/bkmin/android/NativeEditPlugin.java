@@ -83,11 +83,13 @@ public class NativeEditPlugin {
 
     public static void SendUnityMessage(JSONObject jsonMsg)
     {
+        Log.i(LOG_TAG, String.format("To Unity:\n%s", jsonMsg.toString()));
         UnityPlayer.UnitySendMessage(unityName, "OnMsgFromPlugin", jsonMsg.toString());
     }
 
     @SuppressWarnings("unused")
     public static String SendUnityMsgToPlugin(final int nSenderId, final String jsonMsg) {
+        Log.i(LOG_TAG, String.format("From Unity (%d):\n%s", nSenderId, jsonMsg.toString()));
         final Runnable task = new Runnable() {
             public void run() {
                 EditBox.processRecvJsonMsg(nSenderId, jsonMsg);
