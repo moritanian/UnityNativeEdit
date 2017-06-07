@@ -137,25 +137,25 @@ public class NativeEditBox : PluginMsgReceiver
 
 	private void Awake()
 	{
-		objUnityInput = this.GetComponent<InputField>();
-		if (objUnityInput == null)
-		{
-			Debug.LogErrorFormat("No InputField found {0} NativeEditBox Error", this.name);
-			throw new MissingComponentException();
-		}
-
-		objUnityText = objUnityInput.textComponent;
+//		objUnityInput = this.GetComponent<InputField>();
+//		if (objUnityInput == null)
+//		{
+//			Debug.LogErrorFormat("No InputField found {0} NativeEditBox Error", this.name);
+//			throw new MissingComponentException();
+//		}
+//
+//		objUnityText = objUnityInput.textComponent;
 	}
 
 	// Use this for initialization
 	protected override void Start()
 	{
-		base.Start();
-
-		// Wait until the end of frame before initializing to ensure that Unity UI layout has been built. We used to
-		// initialize at Start, but that resulted in an invalid RectTransform position and size on the InputField if it
-		// was instantiated at runtime instead of being built in to the scene.
-		StartCoroutine(InitialzieOnNextFrame());
+//		base.Start();
+//
+//		// Wait until the end of frame before initializing to ensure that Unity UI layout has been built. We used to
+//		// initialize at Start, but that resulted in an invalid RectTransform position and size on the InputField if it
+//		// was instantiated at runtime instead of being built in to the scene.
+//		StartCoroutine(InitialzieOnNextFrame());
 	}
 
 	private void OnEnable()

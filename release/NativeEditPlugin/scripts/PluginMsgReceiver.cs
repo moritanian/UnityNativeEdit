@@ -16,7 +16,8 @@ public abstract class PluginMsgReceiver : MonoBehaviour
 
 	protected JsonObject SendPluginMsg(JsonObject jsonMsg)
 	{
-		return PluginMsgHandler.getInst().SendMsgToPlugin(nReceiverId, jsonMsg);
+		return null;
+//		return PluginMsgHandler.getInst().SendMsgToPlugin(nReceiverId, jsonMsg);
 	}
 
 	public abstract void OnPluginMsgDirect(JsonObject jsonMsg);  
