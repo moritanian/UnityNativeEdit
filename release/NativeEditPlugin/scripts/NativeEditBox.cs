@@ -192,7 +192,7 @@ public class NativeEditBox : PluginMsgReceiver
 		yield return null;
 
 		this.PrepareNativeEdit();
-		#if (UNITY_IPHONE || UNITY_ANDROID) && !UNITY_EDITOR && !NATIVE_EDIT_ANDROID_DISABLED
+		#if (UNITY_IPHONE || (UNITY_ANDROID && !NATIVE_EDIT_ANDROID_DISABLED)) && !UNITY_EDITOR
 		this.CreateNativeEdit();
 		this.SetTextNative(this.objUnityText.text);
 
@@ -391,7 +391,7 @@ public class NativeEditBox : PluginMsgReceiver
 
 	public void SetFocus(bool bFocus)
 	{
-#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR  && !NATIVE_EDIT_ANDROID_DISABLED
+#if (UNITY_IOS || (UNITY_ANDROID && !NATIVE_EDIT_ANDROID_DISABLED)) && !UNITY_EDITOR  
 		if (!bNativeEditCreated)
 		{
 			focusOnCreate = bFocus;
