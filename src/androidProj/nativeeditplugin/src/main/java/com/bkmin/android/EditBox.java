@@ -217,11 +217,11 @@ public class EditBox {
             edit.setText("");
             edit.setHint(placeHolder);
 
-            Rect rect = new Rect((int) x, (int) y, (int) (x + width), (int) (y + height));
+            Rect rect = new Rect((int) x - 20, (int) y - 20, (int) (x + width + 40), (int) (y + height + 40));
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(rect.width(), rect.height());
             lp.setMargins(rect.left, rect.top, 0, 0);
             edit.setLayoutParams(lp);
-            edit.setPadding(0, 0, 0, 0);
+            edit.setPadding(20, 20, 20, 20);
 
             int editInputType = 0;
             switch (contentType) {
