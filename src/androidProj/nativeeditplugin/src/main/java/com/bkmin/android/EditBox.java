@@ -461,7 +461,7 @@ public class EditBox {
             double width = jsonRect.getDouble("width") * (double) layout.getWidth();
             double height = jsonRect.getDouble("height") * (double) layout.getHeight();
 
-            Rect rect = new Rect((int) x, (int) y, (int) (x + width), (int) (y + height));
+            Rect rect = new Rect((int) x - 20, (int) y - 20, (int) (x + width + 40), (int) (y + height + 40));
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(rect.width(), rect.height());
             lp.setMargins(rect.left, rect.top, 0, 0);
             edit.setLayoutParams(lp);
