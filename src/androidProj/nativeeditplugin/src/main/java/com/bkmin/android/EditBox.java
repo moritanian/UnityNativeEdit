@@ -26,26 +26,7 @@ import android.widget.TextView;
 
 public class EditBox {
 
-    // Simplest way to notify the EditBox about the application lifecycle.
-    class EditTextLifeCycle extends EditText
-    {
-        EditBox observerBox;
-        public EditTextLifeCycle(Context context, EditBox box)
-        {
-            super(context);
-            this.observerBox = box;
-        }
-
-        @Override
-        public void onWindowFocusChanged(boolean hasWindowFocus)
-        {
-            super.onWindowFocusChanged(hasWindowFocus);
-            if (!hasWindowFocus)
-                observerBox.notifyFocusChanged(hasWindowFocus);
-        }
-    }
-
-    private EditTextLifeCycle edit;
+    private EditText  edit;
     private final RelativeLayout layout;
     private int tag;
     private int characterLimit;
@@ -116,12 +97,6 @@ public class EditBox {
             rootView.clearFocus();
             imm.hideSoftInputFromWindow(edit.getWindowToken(), 0);
         }
-    }
-
-    private void notifyFocusChanged(boolean hasWindowFocus)
-    {
-        if(!hasWindowFocus)
-            showKeyboard(false);
     }
 
     private void processJsonMsg(JSONObject jsonMsg)
@@ -206,9 +181,9 @@ public class EditBox {
             String returnKeyType = jsonObj.getString("return_key_type");
 
             String alignment = jsonObj.getString("align");
-            boolean multiline = jsonObj.getBoolean("multiline");
+            final boolean multiline = jsonObj.getBoolean("multiline");
 
-            edit = new EditTextLifeCycle(NativeEditPlugin.unityActivity.getApplicationContext(), this);
+            edit = new EditText(NativeEditPlugin.unityActivity.getApplicationContext());
 
             // It's important to set this first as it resets some things, for example character hiding if content type is password.
             edit.setSingleLine(!multiline);
@@ -223,7 +198,8 @@ public class EditBox {
             edit.setLayoutParams(lp);
             edit.setPadding(0, 0, 0, 0);
 
-            int editInputType = 0;
+            int editInputType = edit.getInputType();
+
             switch (contentType) {
                 case "Standard" : editInputType |= InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES; break; // This is default behaviour
                 case "Autocorrected" : editInputType |= InputType.TYPE_CLASS_TEXT  | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT; break;
@@ -329,8 +305,9 @@ public class EditBox {
                         }
                         catch(JSONException e) {}
                         eb.SendJsonToUnity(msgTextEndJSON);
+                        eb.showKeyboard(false);
+                        
                     }
-                    SetFocus(hasFocus);
                 }
             });
 
@@ -383,12 +360,17 @@ public class EditBox {
                         catch(JSONException e) {}
 
                         eb.SendJsonToUnity(jsonToUnity);
-                        return true;
+                        if (!multiline){
+                            SetFocus(false);
+                            return true;
+                        }
                     }
                     return false;
                 }
             });
 
+            layout.setFocusableInTouchMode(true);
+            layout.setClickable(true);
             layout.addView(edit);
 
         } catch (JSONException e)
