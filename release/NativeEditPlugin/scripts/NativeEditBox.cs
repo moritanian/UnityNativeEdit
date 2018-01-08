@@ -182,7 +182,8 @@ public class NativeEditBox : PluginMsgReceiver
 		if (!bNativeEditCreated || !this.Visible)
 			return;
 
-		this.SetVisible(hasFocus);
+		if(!hasFocus)
+			this.SetFocus(false);
 	}
 
 	private IEnumerator InitialzieOnNextFrame()
@@ -348,6 +349,8 @@ public class NativeEditBox : PluginMsgReceiver
 
 		if (!visibleOnCreate)
 			SetVisible(false);
+		else
+			Visible = true;
 
 		if (focusOnCreate)
 			SetFocus(true);
