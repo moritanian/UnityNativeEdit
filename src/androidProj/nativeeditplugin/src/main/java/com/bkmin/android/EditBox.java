@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.NativeActivity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -42,6 +43,7 @@ public class EditBox {
     private static final String MSG_TEXT_END_EDIT = "TextEndEdit";
     private static final String MSG_ANDROID_KEY_DOWN = "AndroidKeyDown";
     private static final String MSG_RETURN_PRESSED = "ReturnPressed";
+    private static final String MSG_SET_VERTICAL_SCROLL_OFFSET = "SetVerticalScrollOffset";
 
     public static void processRecvJsonMsg(int nSenderId, final String strJson)
     {
@@ -128,6 +130,10 @@ public class EditBox {
                     String strKey = jsonMsg.getString("key");
                     this.OnForceAndroidKeyDown(strKey);
                     break;
+                case MSG_SET_VERTICAL_SCROLL_OFFSET:
+                    int scrollOffset = jsonMsg.getInt("offset");
+                    this.SetScrollOffset(scrollOffset);
+                    break;
             }
 
         } catch (Exception e)
@@ -182,8 +188,9 @@ public class EditBox {
 
             String alignment = jsonObj.getString("align");
             final boolean multiline = jsonObj.getBoolean("multiline");
+            final boolean verticalScrollbarEnabled = jsonObj.getBoolean("verticalScrollbarEnabled");
 
-            edit = new EditText(NativeEditPlugin.unityActivity.getApplicationContext());
+            edit = (EditText) NativeEditPlugin.unityActivity.getLayoutInflater().inflate(R.layout.edit_box, null);
 
             // It's important to set this first as it resets some things, for example character hiding if content type is password.
             edit.setSingleLine(!multiline);
@@ -287,6 +294,14 @@ public class EditBox {
             if (font != null && !font.isEmpty()) {
                 Typeface tf = Typeface.create(font, Typeface.NORMAL);
                 edit.setTypeface(tf);
+            }
+
+            if(verticalScrollbarEnabled){
+                edit.setVerticalScrollBarEnabled(true);
+                edit.setScrollbarFadingEnabled(false);
+            } else {
+                edit.setVerticalScrollBarEnabled(false);
+                edit.setScrollbarFadingEnabled(true);
             }
 
             final EditBox eb = this;
@@ -495,5 +510,9 @@ public class EditBox {
             Log.i(NativeEditPlugin.LOG_TAG, String.format("Force fire KEY EVENT %d", keyCode));
             edit.onKeyDown(keyCode, ke);
         }
+    }
+
+    private void SetScrollOffset(int scrollOffset){
+        edit.scrollTo(0, scrollOffset);
     }
 }
