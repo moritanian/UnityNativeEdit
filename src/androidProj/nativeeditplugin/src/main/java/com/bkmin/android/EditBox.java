@@ -485,6 +485,10 @@ public class EditBox {
             keyCode = KeyEvent.KEYCODE_DEL;
         } else if (strKey.equalsIgnoreCase("enter")) {
             keyCode = KeyEvent.KEYCODE_ENTER;
+        } else if (strKey.equalsIgnoreCase("right")) {
+            keyCode = KeyEvent.KEYCODE_DPAD_RIGHT;
+        } else if (strKey.equalsIgnoreCase("left")) {
+            keyCode = KeyEvent.KEYCODE_DPAD_LEFT;
         } else if (strKey.equals("0")) {
             keyCode = KeyEvent.KEYCODE_0;
         } else if (strKey.equals("1")) {
