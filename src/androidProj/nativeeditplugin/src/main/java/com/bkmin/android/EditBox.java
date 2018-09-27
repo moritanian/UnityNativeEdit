@@ -298,7 +298,8 @@ public class EditBox {
 
             if(verticalScrollbarEnabled){
                 edit.setVerticalScrollBarEnabled(true);
-                edit.setScrollbarFadingEnabled(false);
+                edit.setScrollbarFadingEnabled(true);
+                edit.setVerticalFadingEdgeEnabled(true);
             } else {
                 edit.setVerticalScrollBarEnabled(false);
                 edit.setScrollbarFadingEnabled(true);
