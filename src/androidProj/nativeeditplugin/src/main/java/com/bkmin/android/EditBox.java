@@ -322,7 +322,7 @@ public class EditBox {
                         catch(JSONException e) {}
                         eb.SendJsonToUnity(msgTextEndJSON);
                         eb.showKeyboard(false);
-                        
+
                     }
                 }
             });
@@ -489,6 +489,8 @@ public class EditBox {
             keyCode = KeyEvent.KEYCODE_DPAD_RIGHT;
         } else if (strKey.equalsIgnoreCase("left")) {
             keyCode = KeyEvent.KEYCODE_DPAD_LEFT;
+        } else if (strKey.equalsIgnoreCase("space")) {
+            keyCode = KeyEvent.KEYCODE_SPACE;
         } else if (strKey.equals("0")) {
             keyCode = KeyEvent.KEYCODE_0;
         } else if (strKey.equals("1")) {
